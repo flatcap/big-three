@@ -36,10 +36,9 @@ public:
 	}
 
 	Foo (Foo&& other) :
-		number(object_index++),
-		message (other.message)
+		Foo()
 	{
-		other.message = nullptr;
+		swap(*this, other);
 		std::cout << "move constructor " << this << "\n";
 	}
 
@@ -68,6 +67,12 @@ public:
 	}
 
 private:
+	friend void swap(Foo& first, Foo& second)
+	{
+		std::cout << "swap " << first << " and " << second << "\n";
+		std::swap(first.message, second.message);
+	}
+
 	friend std::ostream& operator<< (std::ostream& os, const Foo* foo)
 	{
 		if (foo)
@@ -113,8 +118,11 @@ int main()
 	std::cout << "\nrval\n";
 	f3 = function();
 
-	std::cout << "\nswap\n";
+	std::cout << "\nstd::swap\n";
 	std::swap (f2, f3);
+
+	std::cout << "\nobject swap\n";
+	swap (f2, f3);
 
 	std::cout << "\nend\n";
 	return 0;
